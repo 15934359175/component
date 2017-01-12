@@ -101,8 +101,44 @@
 	            xmlobj.send();
 	        }
 	    }, {
+	        key: "down",
+	        value: function down(zurl) {
+	            console.log(zurl);
+	            this.setState({ zurl: zurl });
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
+
+	            var that = this;
+	            var eles = [];
+	            for (var i in this.state.data) {
+	                var newarr = this.state.data[i].map(function (a, b) {
+	                    return _react2.default.createElement(
+	                        _antd.Menu.Item,
+	                        { key: b },
+	                        _react2.default.createElement(
+	                            "a",
+	                            { className: "menuLink", href: a.url, target: "content", title: a.zurl, onMouseDown: function onMouseDown() {
+	                                    that.down(a.zurl);
+	                                } },
+	                            a.catname
+	                        )
+	                    );
+	                });
+	                var menu = _react2.default.createElement(
+	                    SubMenu,
+	                    { key: i, title: _react2.default.createElement(
+	                            "span",
+	                            null,
+	                            _react2.default.createElement(_antd.Icon, { type: "user" }),
+	                            i
+	                        ) },
+	                    newarr
+	                );
+	                eles.push(menu);
+	            }
+
 	            return _react2.default.createElement(
 	                _antd.Layout,
 	                null,
@@ -170,41 +206,18 @@
 	                                    defaultSelectedKeys: ['1'],
 	                                    defaultOpenKeys: ['sub1']
 	                                },
-	                                _react2.default.createElement(
-	                                    SubMenu,
-	                                    { key: "sub1", title: _react2.default.createElement(
-	                                            "span",
-	                                            null,
-	                                            _react2.default.createElement(_antd.Icon, { type: "user" }),
-	                                            "subnav 1"
-	                                        ) },
-	                                    _react2.default.createElement(
-	                                        _antd.Menu.Item,
-	                                        { key: "1" },
-	                                        "option1"
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        _antd.Menu.Item,
-	                                        { key: "2" },
-	                                        "option2"
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        _antd.Menu.Item,
-	                                        { key: "3" },
-	                                        "option3"
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        _antd.Menu.Item,
-	                                        { key: "4" },
-	                                        "option4"
-	                                    )
-	                                )
+	                                eles
 	                            )
 	                        ),
 	                        _react2.default.createElement(
 	                            Content,
 	                            { style: { padding: '0 24px', minHeight: 280 } },
-	                            "Content"
+	                            _react2.default.createElement(
+	                                "a",
+	                                { href: that.state.zurl },
+	                                "\u4E0B\u8F7D"
+	                            ),
+	                            _react2.default.createElement("iframe", { name: "content" })
 	                        )
 	                    )
 	                ),

@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mysql=require("mysql");
+var markdown = require( "markdown" ).markdown;
+var fs=require("fs");
+
 var db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -16,9 +19,12 @@ router.get('/', function(req, res, next) {
 router.get('/comp/:cat/:com/layout/index.html', function(req, res, next) {
     var caturl=req.params.cat;
     var comurl=req.params.com;
-    var url=process.cwd()+"/comp/"+caturl+"/"+comurl+"/layout/index.html";
-
-    res.sendFile(url);
+    var url=process.cwd()+"/comp/"+caturl+"/"+comurl+"/layout/index.md";
+    var mdStr=fs.readFileSync(url).toString();
+    console.log(mdStr);
+    var htmlStr=markdown.toHTML(mdStr)
+       htmlStr=" <link rel='stylesheet' href='/css/github-markdown.css'><div class='markdown-body'>"+htmlStr+"</div>"
+    res.send(htmlStr);
 });
 router.get('/comp/:cat/:com/:zip', function(req, res, next) {
     var caturl=req.params.cat;
