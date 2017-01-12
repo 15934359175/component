@@ -3,6 +3,7 @@ import ReactDOM,{render} from "react-dom";
 import { DatePicker } from 'antd';
 import 'antd/dist/antd.css';
 
+
 class Main extends Component{
     constructor(){
         super();
@@ -11,13 +12,13 @@ class Main extends Component{
     render(){
         return(
             <div>
-                <DatePicker />
+            <DatePicker/>
             </div>
 
         )
     }
 }
-render(<Main/>,document.querySelector("#root"));
+render(<Main data={["aa","bb"]}/>,document.querySelector("#root"));
 
 
 

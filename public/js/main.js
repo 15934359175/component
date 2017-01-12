@@ -91,7 +91,7 @@
 	    return Main;
 	}(_react.Component);
 
-	(0, _reactDom.render)(_react2.default.createElement(Main, null), document.querySelector("#root"));
+	(0, _reactDom.render)(_react2.default.createElement(Main, { data: ["aa", "bb"] }), document.querySelector("#root"));
 
 /***/ },
 /* 1 */
