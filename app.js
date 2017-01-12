@@ -1,3 +1,10 @@
+/*
+* 1. 压缩包
+*    a. 布局文件
+*    b. 源码
+*    c. json
+* */
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
