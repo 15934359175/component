@@ -13,7 +13,7 @@ var db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'root',
-    database : 'my_db'
+    database : 'component'
 });
 
 
@@ -27,7 +27,7 @@ var db = mysql.createConnection({
  *  6    footer  ..    ..    4
 *
 * */
-
+var catname,url,zurl,pid,name;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -63,7 +63,11 @@ router.post('/upload', upload.single('file'), function (req, res, next) {
               var packageUrl=process.cwd()+"/comp/package.json";
               var packageData=JSON.parse(fs.readFileSync(packageUrl).toString());
               var category=packageData.category;
-              var name=packageData.name;
+               catname=category
+              name=packageData.name;
+
+               url="/comp/"+catname+"/"+name+"/layout/index.html";
+               zurl="/comp/"+catname+"/"+name+"/code.zip";
               //根据json文件的信息，来创建相应的目录
               var destdir=compUrl+"/"+category+"/"+name
               mkdir('-p',destdir);
@@ -80,18 +84,54 @@ router.post('/upload', upload.single('file'), function (req, res, next) {
                 archive.pipe(output);
                 archive.glob(destdir+"/code/*.*");
                 archive.finalize();
-
-                /*要把相应的路径往数据库里面存储*/
-
-                  //类名  大类 =category 小类=name
-                  // layout =destdir+"/layout/index.html"
-                  // code.zip =destdir+"/code.zip"
-
-                db.query()
-
-
-              cb();
+                cb();
+            },
+            //要处理数据库 处理大类
+            function (cb){
+               db.query(`select id from component where catname='${catname}'`,function(error,rows){
+                    if(error){
+                        console.log(error)
+                    }else{
+                        if(rows.length>0){
+                            //大类有
+                          pid=rows[0].id;
+                            cb();
+                        }else{
+                            //没有大类
+                            db.query(`insert into component (catname,url,zurl,pid) values ('${catname}','${url}','${zurl}',0)`,function(error,info){
+                              if(error){
+                                  console.log(error)
+                              }else{
+                                  pid=info.insertId;
+                                  cb()
+                              }
+                            })
+                        }
+                    }
+               })
+            },
+            //要处理数据库 处理小类
+            function (cb){
+                db.query(`select id from component where catname='${name}'`,function(error,rows){
+                    if(error){
+                        console.log(error);
+                    }else{
+                        if(rows.length>0){
+                            cb();
+                        }else{
+                            db.query(`insert into component (catname,url,zurl,pid) values ('${name}','${url}','${zurl}','${pid}')`,function(error,rows){
+                        if(error){
+                            console.log(error)
+                        }else{
+                            cb();
+                        }
+                            })
+                        }
+                    }
+                })
             }
+
+
 
         ],function(){
             console.log("完毕")
